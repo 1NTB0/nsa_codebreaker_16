@@ -1,0 +1,12 @@
+break *0x080496e9
+  commands
+    set $esi="1624070832"
+    continue
+  end
+break *0x0804aedd
+  commands
+    p/d $ecx
+    continue
+    quit
+  end
+

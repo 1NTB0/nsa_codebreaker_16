@@ -1,0 +1,5 @@
+file ./keygen
+br *0x080494CA
+r -g -k 1563276313 -o output
+set $eax=1473014616
+continue

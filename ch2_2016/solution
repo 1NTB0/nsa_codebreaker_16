@@ -1,0 +1,4 @@
+- find the string in binary that looks most likely a version number...
+- A: 1.4-dev3573
+- then find the corresponding network packets in pcap that contains the version string
+- A: 172.23.122.57

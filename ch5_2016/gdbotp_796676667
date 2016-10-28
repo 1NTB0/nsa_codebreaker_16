@@ -1,0 +1,12 @@
+file ./server
+b *0x080496e9
+b *0x0804aedd
+command 1
+set $esi="796676667"
+continue
+end
+command 2
+p/d $ecx
+continue
+end
+run --key 796676667.key.enc

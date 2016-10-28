@@ -1,0 +1,10 @@
+- looked into client; found that the OTP authentication code should be a number (%u)
+- connect the server with client; client will be asked for command, followed by OTP code. Enter a fake one "1234"
+- reverse engineering the server; found some computation related with authentication, such as EVP_PKEY_new_mac key(). 
+- in gdb, <b *0x0804aedd>, which is the place in the code where to compare your OTP code client with the existed in binary. 
+- Notice: the OTP code is time sensitive and it will change overhead! In this challenge, your input OTP code from client 
+	will be checked with server for threetimes. Therefore, as long as you fail three times for once, use the very last value 
+	of $ecx as OTP code for the next request from client. The effectiveness of the OTP code will not expire as long as you 
+	try fast!
+- A: OTP code varies over time! but if OTP code is right, client can issue commands. e.g. "getserial", get response 
+	"remote serial is 1563276313" from server!

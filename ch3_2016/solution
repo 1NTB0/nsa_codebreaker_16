@@ -1,0 +1,3 @@
+- find rsa private key from the binary and where it tries to decrypt it
+- now we know it's using rsa to decrypt the file, we do the same thing
+- openssl rsautl -decrypt -in key -out output -inkey rsa.priv

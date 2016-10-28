@@ -1,0 +1,3 @@
+- find string "connecting to host %s:%d from port %d\n"
+- trace back and find the port number pushed onto stack before the string
+-A: src.port = 17579; dst.port = 8080

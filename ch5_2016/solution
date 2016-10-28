@@ -1,0 +1,45 @@
+- Master Key file length = 20 bytes; otherwise, keygen output "invalid keyfile"
+- b *0x080494b0, that's when the random seed is used for generating random number(-g)/master key(-m) along w/ serial number to generate .key file
+- master key = srand(time(0)). Since as long as the seed (i.e. time(0)) is the same, srand() will always generate the same thing. Therefore, we just need to find the seed (i.e. time(0)) that has been used to generate the real master key hold by the advisory
+- b *0x080494ca to change the $eax value as the return of time(0)
+- b *0x08049B60, that's when the opath://secret?=xxxx is generated
+- after we get the master key (i.e. time(0) value), we use it to generate the secret for the other two serial numbers provided, and then encypt them using the rsa private key
+- then we follow the procedure below to pass the encrypted secret key to server and connect it with client. 
+- Notice that we will need to bypass the checking of inconcsistency between the serial numbers provided and that of this machine. This can be done at breakpoint 0x080496e9.
+- the rest of the challenge will be exactly the same as that of challenge 4, as we need to print out the OTP code for each serial number at breakpoint 0x0804aedd.
+- A: bruteforce and found that the return value of time(0) is 1473014616.
+=====================================================================================
+Procedures:
+
+- change gdbcmds, reset it in terms of "set $eax=1474166371"; that's the current time and we need to -1 for each loop to get what time did the adversary use for generating master key
+	-> ./bruteforce.sh
+- at the end when the bruteforce is done, find the intended time(0) value and use it to generate the secret key file "xxx.key" by passing it to keygen.
+	-> "gdb < gdb[serialnumber]"
+- encrypt the secret key using the private RSA key
+	-> "openssl rsautl -encrypt -in 1624070832.key -out 1624070832.key.enc -inkey rsa.priv"
+	-> "openssl rsautl -encrypt -in 796676667.key -out 796676667.key.enc -inkey rsa.priv"
+- then, run the gdb commands as below for getting OTP code
+	-> "gdb < gdbotp_1624070832"
+	-> "gdb < gdbotp_796676667"
+
+b *0x080496e9
+b *0x0804aedd
+run --key 796676667.key.enc
+command 1
+set $esi="796676667"
+continue
+command 2
+p/d $ecx
+continue
+quit
+
+b *0x080496e9
+b *0x0804aedd
+run --key 1624070832.key.enc
+command 1
+set $esi="1624070832"
+continue
+command 2
+p/d $ecx
+continue
+quit
